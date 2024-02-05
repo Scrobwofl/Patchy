@@ -39,7 +39,7 @@ app.delete('/plants/:id', (req, res) => {
   try {
     const id = req.params.id
     const deletedPlant = db.prepare(`DELETE FROM  plants WHERE id = ?`).run(id)
-    res.status(200).json ({recordDeleted: deletedMessage})
+    res.status(200).json ({recordDeleted: deletedPlant})
   } catch(err) {
     res.status(500).json({error: err})
   }
@@ -49,6 +49,7 @@ app.delete('/plants/:id', (req, res) => {
 app.post("/plants", function (req, res) {
   console.log(req.body);
   try{
+    const API_ID = req.body.API_ID
     const name = req.body.name;
     const en_wikipedia_url = req.body.en_wikipedia_url;
     const height = req.body.height
@@ -59,8 +60,9 @@ app.post("/plants", function (req, res) {
     const main_image_path = req.body.main_image_path
     const sun_requirements = req.body.sun_requirements
     const scientific_names = req.body.scientific_names
+    const patches = req.body.patches
     const newPlant = db
-    .prepare(`INSERT INTO plants (name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names) VALUES (?,?,?,?,?,?,?,?,?,?)`)
+    .prepare(`INSERT INTO plants (API_ID,name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`)
     .run(plant);
   response.json(newPlant);
   } catch (err) {
