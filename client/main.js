@@ -4,40 +4,36 @@ const form = document.getElementById("form");
 
 let plants = [
   {
-    name: "Potato",
-    wikiUrl: "www.wikipedia.com",
-    height: 1.3,
-    spread: 0.7,
-    desc: "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-    rowSpacing: 0.5,
-    sowingMethod: "Finger in the mud",
-    imagePath: "https://placehold.co/200x100",
-    sunRequirements: "Plant in full sun",
-    scientificNames: "Horribilus Plantius",
+    _id: 134,
+    name: "Pomegranate Habadashery Banana Wombat Toads",
+    description:
+      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
+    scientific_names: "Beaniest talliest",
+    thumbnail_url: "https://placehold.co/100x100",
   },
   {
-    name: "Potato",
-    wikiUrl: "www.wikipedia.com",
-    height: 1.3,
-    spread: 0.7,
-    desc: "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-    rowSpacing: 0.5,
-    sowingMethod: "Finger in the mud",
-    imagePath: "https://placehold.co/200x100",
-    sunRequirements: "Plant in full sun",
-    scientificNames: "Horribilus Plantius",
+    _id: 134,
+    name: "Pomegranate Habadashery Banana Wombat Toads",
+    description:
+      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
+    scientific_names: "Beaniest talliest",
+    thumbnail_url: "https://placehold.co/100x100",
   },
   {
-    name: "Potato",
-    wikiUrl: "www.wikipedia.com",
-    height: 1.3,
-    spread: 0.7,
-    desc: "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-    rowSpacing: 0.5,
-    sowingMethod: "Finger in the mud",
-    imagePath: "https://placehold.co/200x100",
-    sunRequirements: "Plant in full sun",
-    scientificNames: "Horribilus Plantius",
+    _id: 134,
+    name: "Runner Beans",
+    description:
+      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
+    scientific_names: "Beaniest talliest",
+    thumbnail_url: "https://placehold.co/100x100",
+  },
+  {
+    _id: 134,
+    name: "Runner Beans",
+    description:
+      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
+    scientific_names: "Beaniest talliest",
+    thumbnail_url: "https://placehold.co/100x100",
   },
 ];
 
@@ -162,21 +158,36 @@ function createCard(plant) {
 
 createCard(selectedPlant);
 
-// const searchResultsDisplay(plants) {
-//   console.log("Displaying results");
-//   const plantCardsCntr = document.getElementById("plant-cards-container");
-//   // Main card structure
-//   const cardCntr = document.createElement("div");
-//   cardCntr.classList.add("plant-card");
-//   const cardHeaderCntr = document.createElement("div");
-//   cardHeaderCntr.classList.add("card-header-container");
-//   const cardDescCntr = document.createElement("div");
-//   cardDescCntr.classList.add("card-desc-container");
-//   const cardDetailsCntr = document.createElement("div");
-//   cardDetailsCntr.classList.add("card-details-container");
-//   const cardBtnCntr = document.createElement("div");
-//   cardBtnCntr.classList.add("card-button-container");
-// }
+function searchResultsDisplay(plants) {
+  console.log("Displaying results");
+  const searchResultsCntr = document.getElementById("search-results-container");
+
+  // Main results structure
+  plants.forEach((plant) => {
+    //Create Card
+    const resultCard = document.createElement("div");
+    resultCard.classList.add("result-card");
+
+    const plantImg = document.createElement("img");
+    plantImg.src = plant.thumbnail_url;
+    plantImg.alt = plant.description;
+
+    const plantInfo = document.createElement("div");
+    plantInfo.classList.add("plant-info");
+
+    const resultTitle = document.createElement("h2");
+    resultTitle.innerText = plant.name;
+    const scienceName = document.createElement("p");
+    scienceName.innerText = plant.scientific_names;
+
+    plantInfo.append(resultTitle, scienceName);
+
+    resultCard.append(plantImg, plantInfo);
+    searchResultsCntr.appendChild(resultCard);
+  });
+}
+
+searchResultsDisplay(plants);
 
 // // Search Growstuff, requires paramater search(queryParam)
 // let currentPlantIndex = 0;
@@ -190,22 +201,6 @@ createCard(selectedPlant);
 //   // createPlant(plants[currentPlantIndex])
 // }
 
-// function createPlant(plant) {
-//   plantContainer.innerHTML=""
-//     let API_ID = plant.id;
-//     let name = plant.name;
-//     let en_wikipedia_url = plant.en_wikipedia_url;
-//     let height = plant.openfarm_data.attributes.height;
-//     let spread = plant.openfarm_data.attributes.spread;
-//     let description = plant.openfarm_data.attributes.description;
-//     let row_spacing = plant.openfarm_data.attributes.row_spacing;
-//     let sowing_method = plant.openfarm_data.attributes.sowing_method;
-//     let main_image_path = plant.openfarm_data.attributes.main_image_path;
-//     let sun_requirements = plant.openfarm_data.attributes.sun_requirements;
-//     let scientific_names = plant.scientific_names;
-//     let patches = "";
-// }
-
 // // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
 // async function getPlants() {
 
@@ -214,8 +209,7 @@ createCard(selectedPlant);
 //   const response = await fetch(`${baseURL}/plants`);
 //   const plants = await response.json();
 
-//   // Loop through the plants if more than one returned
-//   createPlants()
+//   searchResultsDisplay(plants)
 
 //     // Append the container to the main messageContainer
 //     messageContainer.appendChild(plantItem);
