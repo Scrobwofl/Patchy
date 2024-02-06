@@ -1,5 +1,8 @@
 const baseURL = "http://localhost:5432";
 
+// These need to be the IDs from the frontend
+const form = document.getElementById("form");
+const plantContainer = document.getElementById("plantContainer");
 
 // Search Growstuff, requires paramater search(queryParam)
 let plants =[];
@@ -13,6 +16,21 @@ async function search (queryParam) {
   createPlant(plants[currentPlantIndex])
 }
 
+function createPlant(plant) {
+  plantContainer.innerHTML=""
+    let API_ID = plant.id;
+    let name = plant.name;
+    let en_wikipedia_url = plant.en_wikipedia_url;
+    let height = plant.openfarm_data.attributes.height;
+    let spread = plant.openfarm_data.attributes.spread;
+    let description = plant.openfarm_data.attributes.description;
+    let row_spacing = plant.openfarm_data.attributes.row_spacing;
+    let sowing_method = plant.openfarm_data.attributes.sowing_method;
+    let main_image_path = plant.openfarm_data.attributes.main_image_path;
+    let sun_requirements = plant.openfarm_data.attributes.sun_requirements;
+    let scientific_names = plant.scientific_names;
+    let patches = "";
+}
 
 
 // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
