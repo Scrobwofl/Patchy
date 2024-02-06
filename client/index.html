@@ -13,14 +13,20 @@
     <title>Patchy App</title>
   </head>
   <body>
-    <form id="search">>
-        <label for="search">Search</label><br>
-        <input type="text" id="search" name="search"/>
-        <input type="submit" value="Submit">
-      </form>
-    </section>
     <div id="app">
-      <section id="plant-cards-container"></section>
+      <form id="search-container">
+        <label for="search">Search for Plants:</label><br />
+        <input type="text" id="search" name="search" />
+        <input
+          type="submit"
+          id="submit-button"
+          value="Submit"
+          class="buttons"
+        />
+      </form>
+
+      <section id="search-results-container"></section>
+      <section id="plant-card-container"></section>
     </div>
   </body>
 </html>
