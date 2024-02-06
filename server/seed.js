@@ -4,8 +4,8 @@ const db = new Database("database.db");
 db.exec(`
   CREATE TABLE IF NOT EXISTS plants (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    API_ID INTEGER NOT NULL UNIQUE,
-    name TEXT NOT NULL,
+    API_ID INTEGER,
+    name TEXT,
     en_wikipedia_url TEXT,
     height INTEGER,
     spread INTEGER,
