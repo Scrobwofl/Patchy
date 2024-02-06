@@ -83,14 +83,28 @@ app.post("/plants", function (req, res) {
 });
 
 //TESTING PUT to update a plant
+// app.put(`/plants/:id`, (req, res) => {
+//   console.log(req.params, req.body)
+//   try {
+//     const id = req.params.id
+//     const API_ID = req.body.API_ID
+//     const name = req.body.name
+
+//     const updatePlant = db.prepare(`UPDATE plants SET API_ID=?,name=?, WHERE id = ?`).run(API_ID, name, id)
+//     res.status(204).json({plant: updatePlant})
+//   } catch (err) {
+//     res.status(500).json({error: err})
+//   }
+// }
+// )
 
 
-app.put("plants/:id", (req, res) => {
-  console.log(req.params, req.body);
-   try {
-    const id = req.params.id;
+app.put(`/plants/:id`, (req, res) => {
+  console.log(req.params, req.body)
+  try {
+    const id = req.params.id
     const API_ID = req.body.API_ID
-    const name = req.body.name;
+    const name = req.body.name
     const en_wikipedia_url = req.body.en_wikipedia_url
     const height = req.body.height
     const spread = req.body.spread
@@ -101,16 +115,11 @@ app.put("plants/:id", (req, res) => {
     const sun_requirements = req.body.sun_requirements
     const scientific_names = req.body.scientific_names
     const patches = req.body.patches
-
-    const updatePlant = db
-      .prepare(
-        `UPDATE plants SET API_ID = ?, name = ?, en_wikipedia_url = ?, height = ?, spread = ?, description = ?, row_spacing = ?, sowing_method = ?, main_image_path = ?, sun_requirements = ?, scientific_names = ?, patches = ?`
-        )
-        .run(API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches, id)
-    res.status(204).json({amended: updatePlant})
-   } catch (err) {
-    console.log("failed the try")
-    res.status(500).json({ error: err });
+    const updatePlant = db.prepare(`UPDATE plants SET API_ID=?,name=?, en_wikipedia_url=?, height=?, spread=?,description=?, row_spacing=?, sowing_method=?, main_image_path=?, sun_requirements=?, scientific_names=?, patches=?  WHERE id = ?`).run(API_ID, name, en_wikipedia_url,height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches, id)
+    res.status(204).json({plant: updatePlant})
+  } catch (err) {
+    res.status(500).json({error: err})
   }
 }
 )
+
