@@ -98,21 +98,41 @@ function createCards(plants) {
     plantCardsCntr.appendChild(cardCntr);
 };
 
-  
+ // Search Growstuff for whole plant species, ie all potoatoes
+async function searchSpecies () {
+  const speciesSearchInput = document.getElementById("speciesSearchInput")
+  query = speciesSearchInput.value || "potato"
+  const endpoint = "https://www.growstuff.org/crops/search.json?term=${query}"
+  const plantArray = [];
 
-
-// Search Growstuff, requires paramater search(queryParam)
-let currentPlantIndex = 0;
-async function search (queryParam) {
-  let response = await fetch (
-    `http://growstuff.org/crops/${queryParam}.json`
-  )
-  let data = await response.json();
-  plants = data.results;
-  createCards(plants)
-  // createPlant(plants[currentPlantIndex])
+  try {
+    const response = await fetch(endpoint)
+    const data = await response.json()
+    console.log(data);
+    data.forEach((plant) => {
+      const id = plant.id //This can be parsed to the searchPlant function to get individual plant from species
+      const name = plant.name
+      const description = plant.description
+      const thumbnail_url = plant.thumbnail_url
+      const scientific_name = plant.scientific_name
+      console.log(plant)
+    })
+  }catch (error) {
+    console.error("Error fetching plants:", error);
 }
 
+// Search Growstuff for individual plant, ie sweet potato
+// let currentPlantIndex = 0;
+async function searchPlant (queryParam) {
+let response = await fetch (`http://growstuff.org/crops/${queryParam}.json`)
+let data = await response.json();
+plant = data.results;
+createCards(plant)
+   // createPlant(plants[currentPlantIndex])
+ }
+
+function createPlants(plant) {
+}
 function createPlant(plant) {
   plantContainer.innerHTML=""
     let API_ID = plant.id;
@@ -128,6 +148,11 @@ function createPlant(plant) {
     let scientific_names = plant.scientific_names;
     let patches = "";
 }
+
+
+
+
+
 
 
 // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
@@ -148,7 +173,7 @@ async function getPlants() {
       e.preventDefault();
       handleDelete(plant.id);
     });
-  });
+  };
 }
 
 
