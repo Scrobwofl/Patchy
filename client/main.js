@@ -1,6 +1,5 @@
 console.log("Connected...");
 const baseURL = "http://localhost:5432";
-const form = document.getElementById("form");
 
 let plants = [
   {
@@ -54,7 +53,7 @@ let searchResults = plants;
 let selectedPlant = plant;
 let currentPlantIndex = 0;
 
-// Create x number of display items based on array
+// Create single card with full plant information
 function createCard(plant) {
   console.log("Making Card");
 
@@ -158,25 +157,57 @@ function createCard(plant) {
   plantCardCntr.appendChild(cardCntr);
 }
 
+function searchResultsDisplay(plants) {
+  console.log("Displaying results");
+  const searchResultsCntr = document.getElementById("search-results-container");
+
+  // Main results structure
+  plants.forEach((plant) => {
+    //Create Card
+    const resultCard = document.createElement("div");
+    resultCard.classList.add("result-card");
+
+    const plantImg = document.createElement("img");
+    plantImg.src = plant.thumbnail_url;
+    plantImg.alt = plant.description;
+
+    const plantInfo = document.createElement("div");
+    plantInfo.classList.add("plant-info");
+
+    const resultTitle = document.createElement("h2");
+    resultTitle.innerText = plant.name;
+    const scienceName = document.createElement("p");
+    scienceName.innerText = plant.scientific_names;
+
+    plantInfo.append(resultTitle, scienceName);
+
+    resultCard.append(plantImg, plantInfo);
+    searchResultsCntr.appendChild(resultCard);
+  });
+}
+// searchResultsDisplay(plants);
+
+const form = document.getElementById("search-container");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const query = document.getElementById("search").value.trim();
+  console.log("Form Submitted...");
+  console.log(query);
+  searchSpecies(query);
+});
+
 // Search Growstuff for whole plant species, ie all potoatoes
-async function searchSpecies() {
-  const speciesSearchInput = document.getElementById("speciesSearchInput");
-  query = speciesSearchInput.value || "potato";
-  const endpoint = "https://www.growstuff.org/crops/search.json?term=${query}";
-  const plantArray = [];
+async function searchSpecies(query) {
+  console.log("Searching...");
+  const endpoint = `http://localhost:6060/search-species?term=${query}`;
 
   try {
     const response = await fetch(endpoint);
     const data = await response.json();
     console.log(data);
-    data.forEach((plant) => {
-      const id = plant.id; //This can be parsed to the searchPlant function to get individual plant from species
-      const name = plant.name;
-      const description = plant.description;
-      const thumbnail_url = plant.thumbnail_url;
-      const scientific_name = plant.scientific_name;
-      console.log(plant);
-    });
+    searchResultsDisplay(data);
   } catch (error) {
     console.error("Error fetching plants:", error);
   }
@@ -192,35 +223,30 @@ async function searchPlant(queryParam) {
   // createPlant(plants[currentPlantIndex])
 }
 
-function searchResultsDisplay(plants) {
-  console.log("Displaying results");
-  const searchResultsCntr = document.getElementById("search-results-container");
+// // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
+// async function getPlants() {
+//   // Main results structure
+//   plants.forEach((plant) => {
+//     //Create Card
+//     const resultCard = document.createElement("div");
+//     resultCard.classList.add("result-card");
 
-  // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
-  async function getPlants() {
-    // Main results structure
-    plants.forEach((plant) => {
-      //Create Card
-      const resultCard = document.createElement("div");
-      resultCard.classList.add("result-card");
+//     const plantImg = document.createElement("img");
+//     plantImg.src = plant.thumbnail_url;
+//     plantImg.alt = plant.description;
 
-      const plantImg = document.createElement("img");
-      plantImg.src = plant.thumbnail_url;
-      plantImg.alt = plant.description;
+//     const plantInfo = document.createElement("div");
+//     plantInfo.classList.add("plant-info");
 
-      const plantInfo = document.createElement("div");
-      plantInfo.classList.add("plant-info");
-
-      // Append the container to the main messageContainer
-      messageContainer.appendChild(plantItem);
-      // Event listener for delete, needs to match index.html
-      deleteButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        handleDelete(plant.id);
-      });
-    });
-  }
-}
+//     // Append the container to the main messageContainer
+//     messageContainer.appendChild(plantItem);
+//     // Event listener for delete, needs to match index.html
+//     deleteButton.addEventListener("click", (e) => {
+//       e.preventDefault();
+//       handleDelete(plant.id);
+//     });
+//   });
+// }
 
 // Search Growstuff, requires paramater search(queryParam)
 async function search(queryParam) {

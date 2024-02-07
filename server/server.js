@@ -24,26 +24,42 @@ app.get("/", (req, res) => {
     res.status(500).json(error);
   }
 });
- // Get all plants
+
+// Search Endpoint
+app.get("/search-species", async (req, res) => {
+  const query = req.query.term;
+  const endpoint = `https://www.growstuff.org/crops/search.json?term=${query}`;
+
+  try {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching plants:", error);
+    res.status(500).json({ error: "Error fetching plants" });
+  }
+});
+
+// Get all plants
 app.get("/plants", (req, res) => {
   try {
-    let plants = db.prepare (`SELECT * FROM plants`).all()
+    let plants = db.prepare(`SELECT * FROM plants`).all();
     res.status(200).json(plants);
-    } catch (err) {
-    res.status(500).json(err)
+  } catch (err) {
+    res.status(500).json(err);
   }
-})
+});
 
 // Delete plant by id
-app.delete('/plants/:id', (req, res) => {
+app.delete("/plants/:id", (req, res) => {
   try {
-    const id = req.params.id
-    const deletedPlant = db.prepare(`DELETE FROM  plants WHERE id = ?`).run(id)
-    res.status(200).json ({recordDeleted: deletedPlant})
-  } catch(err) {
-    res.status(500).json({error: err})
+    const id = req.params.id;
+    const deletedPlant = db.prepare(`DELETE FROM  plants WHERE id = ?`).run(id);
+    res.status(200).json({ recordDeleted: deletedPlant });
+  } catch (err) {
+    res.status(500).json({ error: err });
   }
-})
+});
 
 // TESTING Post new plant
 // app.post("/plants", (req, res) =>{
@@ -58,27 +74,42 @@ app.delete('/plants/:id', (req, res) => {
 //   }
 // })
 
-
 app.post("/plants", function (req, res) {
   console.log(req.body);
-  try{
-    const API_ID = req.body.API_ID
+  try {
+    const API_ID = req.body.API_ID;
     const name = req.body.name;
-    const en_wikipedia_url = req.body.en_wikipedia_url
-    const height = req.body.height
-    const spread = req.body.spread
-    const description = req.body.description
-    const row_spacing = req.body.row_spacing
-    const sowing_method = req.body.sowing_method
-    const main_image_path = req.body.main_image_path
-    const sun_requirements = req.body.sun_requirements
-    const scientific_names = req.body.scientific_names
-    const patches = req.body.patches
-    const newPlant = db.prepare(`INSERT INTO plants (API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`)
-    .run(API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches);
-  response.json(newPlant);
+    const en_wikipedia_url = req.body.en_wikipedia_url;
+    const height = req.body.height;
+    const spread = req.body.spread;
+    const description = req.body.description;
+    const row_spacing = req.body.row_spacing;
+    const sowing_method = req.body.sowing_method;
+    const main_image_path = req.body.main_image_path;
+    const sun_requirements = req.body.sun_requirements;
+    const scientific_names = req.body.scientific_names;
+    const patches = req.body.patches;
+    const newPlant = db
+      .prepare(
+        `INSERT INTO plants (API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
+      )
+      .run(
+        API_ID,
+        name,
+        en_wikipedia_url,
+        height,
+        spread,
+        description,
+        row_spacing,
+        sowing_method,
+        main_image_path,
+        sun_requirements,
+        scientific_names,
+        patches
+      );
+    response.json(newPlant);
   } catch (err) {
-    res.status(500).json({ error: err})
+    res.status(500).json({ error: err });
   }
 });
 
@@ -98,28 +129,43 @@ app.post("/plants", function (req, res) {
 // }
 // )
 
-
 app.put(`/plants/:id`, (req, res) => {
-  console.log(req.params, req.body)
+  console.log(req.params, req.body);
   try {
-    const id = req.params.id
-    const API_ID = req.body.API_ID
-    const name = req.body.name
-    const en_wikipedia_url = req.body.en_wikipedia_url
-    const height = req.body.height
-    const spread = req.body.spread
-    const description = req.body.description
-    const row_spacing = req.body.row_spacing
-    const sowing_method = req.body.sowing_method
-    const main_image_path = req.body.main_image_path
-    const sun_requirements = req.body.sun_requirements
-    const scientific_names = req.body.scientific_names
-    const patches = req.body.patches
-    const updatePlant = db.prepare(`UPDATE plants SET API_ID=?,name=?, en_wikipedia_url=?, height=?, spread=?,description=?, row_spacing=?, sowing_method=?, main_image_path=?, sun_requirements=?, scientific_names=?, patches=?  WHERE id = ?`).run(API_ID, name, en_wikipedia_url,height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches, id)
-    res.status(204).json({plant: updatePlant})
+    const id = req.params.id;
+    const API_ID = req.body.API_ID;
+    const name = req.body.name;
+    const en_wikipedia_url = req.body.en_wikipedia_url;
+    const height = req.body.height;
+    const spread = req.body.spread;
+    const description = req.body.description;
+    const row_spacing = req.body.row_spacing;
+    const sowing_method = req.body.sowing_method;
+    const main_image_path = req.body.main_image_path;
+    const sun_requirements = req.body.sun_requirements;
+    const scientific_names = req.body.scientific_names;
+    const patches = req.body.patches;
+    const updatePlant = db
+      .prepare(
+        `UPDATE plants SET API_ID=?,name=?, en_wikipedia_url=?, height=?, spread=?,description=?, row_spacing=?, sowing_method=?, main_image_path=?, sun_requirements=?, scientific_names=?, patches=?  WHERE id = ?`
+      )
+      .run(
+        API_ID,
+        name,
+        en_wikipedia_url,
+        height,
+        spread,
+        description,
+        row_spacing,
+        sowing_method,
+        main_image_path,
+        sun_requirements,
+        scientific_names,
+        patches,
+        id
+      );
+    res.status(204).json({ plant: updatePlant });
   } catch (err) {
-    res.status(500).json({error: err})
+    res.status(500).json({ error: err });
   }
-}
-)
-
+});
