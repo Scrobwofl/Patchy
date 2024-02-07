@@ -2,57 +2,11 @@ console.log("Connected...");
 const baseURL = "http://localhost:5432";
 const plantCardCntr = document.getElementById("plant-card-container");
 
-let plants = [
-  {
-    _id: 134,
-    name: "Pomegranate Habadashery Banana Wombat Toads",
-    description:
-      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-    scientific_names: "Beaniest talliest",
-    thumbnail_url: "https://placehold.co/100x100",
-  },
-  {
-    _id: 134,
-    name: "Pomegranate Habadashery Banana Wombat Toads",
-    description:
-      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-    scientific_names: "Beaniest talliest",
-    thumbnail_url: "https://placehold.co/100x100",
-  },
-  {
-    _id: 134,
-    name: "Runner Beans",
-    description:
-      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-    scientific_names: "Beaniest talliest",
-    thumbnail_url: "https://placehold.co/100x100",
-  },
-  {
-    _id: 134,
-    name: "Runner Beans",
-    description:
-      "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-    scientific_names: "Beaniest talliest",
-    thumbnail_url: "https://placehold.co/100x100",
-  },
-];
-
-let plant = {
-  name: "Potato",
-  wikiUrl: "www.wikipedia.com",
-  height: 1.3,
-  spread: 0.7,
-  desc: "This is some information about the plant that could be very very long and will need handling to not take up the entire card because that wouldn't be good.",
-  rowSpacing: 0.5,
-  sowingMethod: "Finger in the mud",
-  imagePath: "https://placehold.co/200x100",
-  sunRequirements: "Plant in full sun",
-  scientificNames: "Horribilus Plantius",
-};
-
-let searchResults = plants;
-let selectedPlant = plant;
+let returnedPlantData;
+let plants;
+let plant;
 let currentPlantIndex = 0;
+let myPatch = [];
 
 // Create single card with full plant information
 function createCard(data) {
@@ -76,8 +30,8 @@ function createCard(data) {
   console.log("Created Base Attributes");
   // Adding Header box
   const cardHeaderTitle = document.createElement("h1");
-  console.log(plantAttribute.name);
-  cardHeaderTitle.textContent = plantAttribute.name;
+  // console.log(plantAttribute.name);
+  cardHeaderTitle.textContent = upperCaseThatTitlePlease(data.name);
   const cardHeaderSubheading = document.createElement("p");
   cardHeaderSubheading.textContent = plantAttribute.binominal_name;
   const cardHeaderImg = document.createElement("img");
@@ -151,13 +105,36 @@ function createCard(data) {
   wikiLinkBtn.innerHTML = `<a href=${data.en_wikipedia_url}><i class="fa-solid fa-square-arrow-up-right"></i>Wiki Page</a>`;
   wikiLinkBtn.classList.add("buttons");
 
-  const addToGardenBtn = document.createElement("button");
-  addToGardenBtn.innerHTML = `<i class="fa-solid fa-circle-plus"></i>Add to Library`;
-  addToGardenBtn.classList.add("buttons");
+  const addToPatchBtn = document.createElement("button");
+  addToPatchBtn.innerHTML = `<i class="fa-solid fa-circle-plus"></i>Add to Patch`;
+  addToPatchBtn.classList.add("buttons");
+
+  // Add to myPatch event listener
+  addToPatchBtn.addEventListener("click", () => {
+    console.log("Commenced adding to patch");
+
+    let newPatchItem = {
+      id: data.id,
+      name: data.openfarm_data.attributes.name,
+      wikiUrl: data.openfarm_data.attributes.en_wikipedia_url,
+      height: data.openfarm_data.attributes.height,
+      spread: data.openfarm_data.attributes.spread,
+      desc: data.openfarm_data.attributes.description,
+      rowSpacing: data.openfarm_data.attributes.row_spacing,
+      sowingMethod: data.openfarm_data.attributes.sowing_method,
+      imagePath: data.openfarm_data.attributes.main_image_path,
+      sunRequirements: data.openfarm_data.attributes.sun_requirements,
+      scientificName: data.openfarm_data.attributes.scientific_name,
+    };
+
+    myPatch.push(newPatchItem);
+    console.log(myPatch);
+  });
+
   console.log("buttons made!");
 
   cardBtnCntr.appendChild(wikiLinkBtn);
-  cardBtnCntr.appendChild(addToGardenBtn);
+  cardBtnCntr.appendChild(addToPatchBtn);
 
   // Append Everything
   cardCntr.appendChild(cardHeaderCntr);
@@ -189,7 +166,7 @@ function searchResultsDisplay(plants) {
     plantInfo.classList.add("plant-info");
 
     const resultTitle = document.createElement("h2");
-    resultTitle.innerText = plant.name;
+    resultTitle.innerText = upperCaseThatTitlePlease(plant.name);
     const scienceName = document.createElement("p");
     scienceName.innerText = plant.scientific_names;
 
@@ -204,7 +181,10 @@ function searchResultsDisplay(plants) {
     });
   });
 }
-// searchResultsDisplay(plants);
+
+function upperCaseThatTitlePlease(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
 
 const form = document.getElementById("search-container");
 
