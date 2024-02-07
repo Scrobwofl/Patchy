@@ -12,6 +12,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 100vh;
+}
+
+header {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: stretch;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  background-color: darkslategray;
+  width: 100vw;
+}
+
+#brand-header-icon {
+  background-image: url("./public/images/logos/patchy-icon-logo-letter_small.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto;
+  background-clip: content-box;
+  margin: 1rem;
+  height: auto;
+  width: 200px;
 }
 
 #placeholder-text {
@@ -27,9 +50,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: darkslategray;
   color: white;
-  width: 100vw;
+  width: 100%;
 }
 
 #search-container > label {
@@ -181,6 +203,8 @@
   justify-content: space-between;
   align-items: flex-start;
   max-width: 1000px;
+  max-height: 100%;
+  overflow: scroll;
 }
 
 .result-card {

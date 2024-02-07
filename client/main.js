@@ -55,10 +55,13 @@ let selectedPlant = plant;
 let currentPlantIndex = 0;
 
 // Create single card with full plant information
-function createCard(plant) {
+function createCard(data) {
   console.log("Making Card");
+  console.log(data);
+  const plantAttribute = data.openfarm_data.attributes;
 
   plantCardCntr.innerHTML = "";
+  console.log("Cleared HTML");
   // Main card structure
   const cardCntr = document.createElement("div");
   cardCntr.classList.add("plant-card");
@@ -70,15 +73,17 @@ function createCard(plant) {
   cardDetailsCntr.classList.add("card-details-container");
   const cardBtnCntr = document.createElement("div");
   cardBtnCntr.classList.add("card-button-container");
-
+  console.log("Created Base Attributes");
   // Adding Header box
   const cardHeaderTitle = document.createElement("h1");
-  cardHeaderTitle.textContent = plant.name;
+  console.log(plantAttribute.name);
+  cardHeaderTitle.textContent = plantAttribute.name;
   const cardHeaderSubheading = document.createElement("p");
-  cardHeaderSubheading.textContent = plant.scientificNames;
+  cardHeaderSubheading.textContent = plantAttribute.binominal_name;
   const cardHeaderImg = document.createElement("img");
-  cardHeaderImg.src = plant.imagePath;
-  cardHeaderImg.alt = plant.desc;
+  cardHeaderImg.src = plantAttribute.main_image_path;
+  cardHeaderImg.alt = plantAttribute.description;
+  console.log("Appending Close Button");
   const closeBox = document.createElement("div");
   closeBox.innerHTML = `<i class="fa-solid fa-circle-xmark fa-2xl"></i>`;
   closeBox.classList.add("close-box");
@@ -106,7 +111,7 @@ function createCard(plant) {
 
   // Adding description box
   const cardDescText = document.createElement("p");
-  cardDescText.textContent = plant.desc;
+  cardDescText.textContent = plantAttribute.description;
   cardDescCntr.appendChild(cardDescText);
 
   // A labels array because i can't get the key names from the other array
@@ -119,15 +124,16 @@ function createCard(plant) {
   ];
   // An array of the values for the details box.
   const cardDetailsArray = [
-    plant.height,
-    plant.spread,
-    plant.rowSpacing,
-    plant.sowingMethod,
-    plant.sunRequirements,
+    plantAttribute.height,
+    plantAttribute.spread,
+    plantAttribute.rowSpacing,
+    plantAttribute.sowingMethod,
+    plantAttribute.sunRequirements,
   ];
 
   // A looping the details creation so we dont repeat ourselves too much
   cardDetailsArray.forEach((detail, index) => {
+    console.log(`Looping ${index}`);
     const cardDetailRow = document.createElement("div");
     cardDetailRow.classList.add("card-details-row");
     const cardDetailText = document.createElement("p");
@@ -142,12 +148,13 @@ function createCard(plant) {
 
   // Add the buttons
   const wikiLinkBtn = document.createElement("button");
-  wikiLinkBtn.innerHTML = `<a href=${plant.wikiUrl}><i class="fa-solid fa-square-arrow-up-right"></i>Wiki Page</a>`;
+  wikiLinkBtn.innerHTML = `<a href=${data.en_wikipedia_url}><i class="fa-solid fa-square-arrow-up-right"></i>Wiki Page</a>`;
   wikiLinkBtn.classList.add("buttons");
 
   const addToGardenBtn = document.createElement("button");
-  addToGardenBtn.innerHTML = `<a href=${plant.wikiUrl}><i class="fa-solid fa-circle-plus"></i>Add to Library</a>`;
+  addToGardenBtn.innerHTML = `<i class="fa-solid fa-circle-plus"></i>Add to Library`;
   addToGardenBtn.classList.add("buttons");
+  console.log("buttons made!");
 
   cardBtnCntr.appendChild(wikiLinkBtn);
   cardBtnCntr.appendChild(addToGardenBtn);
@@ -158,6 +165,8 @@ function createCard(plant) {
   cardCntr.appendChild(cardDetailsCntr);
   cardCntr.appendChild(cardBtnCntr);
   plantCardCntr.appendChild(cardCntr);
+
+  // selectedPlant();
   plantCardVisibility();
 }
 
@@ -191,7 +200,7 @@ function searchResultsDisplay(plants) {
 
     resultCard.addEventListener("click", () => {
       console.log(`Clicked ${plant.name}`);
-      createCard(plant);
+      getSpecificPlant(plant.id);
     });
   });
 }
@@ -225,38 +234,14 @@ async function searchSpecies(query) {
 
 // Search Growstuff for individual plant, ie sweet potato
 // let currentPlantIndex = 0;
-async function searchPlant(queryParam) {
-  let response = await fetch(`http://growstuff.org/crops/${queryParam}.json`);
+async function getSpecificPlant(query) {
+  console.log("Requested Data..");
+  let response = await fetch(`http://localhost:6060/crops/${query}`);
   let data = await response.json();
-  plant = data.results;
-  createCard(plant);
+  console.log("Data fetched successfully:", data);
+  createCard(data);
   // createPlant(plants[currentPlantIndex])
 }
-
-// // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
-// async function getPlants() {
-//   // Main results structure
-//   plants.forEach((plant) => {
-//     //Create Card
-//     const resultCard = document.createElement("div");
-//     resultCard.classList.add("result-card");
-
-//     const plantImg = document.createElement("img");
-//     plantImg.src = plant.thumbnail_url;
-//     plantImg.alt = plant.description;
-
-//     const plantInfo = document.createElement("div");
-//     plantInfo.classList.add("plant-info");
-
-//     // Append the container to the main messageContainer
-//     messageContainer.appendChild(plantItem);
-//     // Event listener for delete, needs to match index.html
-//     deleteButton.addEventListener("click", (e) => {
-//       e.preventDefault();
-//       handleDelete(plant.id);
-//     });
-//   });
-// }
 
 // Search Growstuff, requires paramater search(queryParam)
 async function search(queryParam) {
@@ -267,30 +252,19 @@ async function search(queryParam) {
   // createPlant(plants[currentPlantIndex])
 }
 
-// // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
-// async function getPlants() {
-//   // Clear the plantContainer of previous results
-//   plantCardsCntr.innerHTML = "";
-//   const response = await fetch(`${baseURL}/plants`);
-//   const plants = await response.json();
+// Useful scripts for later:
 
-//   searchResultsDisplay(plants)
-
-//     // Append the container to the main messageContainer
-//     messageContainer.appendChild(plantItem);
-//     // Event listener for delete, needs to match index.html
-//     deleteButton.addEventListener("click", (e) => {
-//       e.preventDefault();
-//       handleDelete(plant.id);
-//     });
+// async function handleDelete(id) {
+//   const result = await fetch(`${baseURL}/plants/${id}`, {
+//     method: "DELETE",
 //   });
+//   console.log(result);
+//   if (result.ok) {
+//     getPlants();
+//   }
+// }
 
-async function handleDelete(id) {
-  const result = await fetch(`${baseURL}/plants/${id}`, {
-    method: "DELETE",
-  });
-  console.log(result);
-  if (result.ok) {
-    getPlants();
-  }
-}
+// deleteButton.addEventListener("click", (e) => {
+//   e.preventDefault();
+//   handleDelete(plant.id);
+// });

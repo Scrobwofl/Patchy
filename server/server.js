@@ -40,7 +40,22 @@ app.get("/search-species", async (req, res) => {
   }
 });
 
-// Get all plants
+app.get("/crops/:id", async (req, res) => {
+  console.log("received request");
+  const query = req.params.id;
+  const endpoint = `https://www.growstuff.org/crops/${query}.json`;
+
+  try {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching plants:", error);
+    res.status(500).json({ error: "Error fetching plants" });
+  }
+});
+
+// Get all plants from our own database
 app.get("/plants", (req, res) => {
   try {
     let plants = db.prepare(`SELECT * FROM plants`).all();
@@ -50,7 +65,7 @@ app.get("/plants", (req, res) => {
   }
 });
 
-// Delete plant by id
+// Delete plant by id from our database
 app.delete("/plants/:id", (req, res) => {
   try {
     const id = req.params.id;
