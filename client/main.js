@@ -52,6 +52,7 @@ let plant = {
 
 let searchResults = plants;
 let selectedPlant = plant;
+let currentPlantIndex = 0;
 
 // Create x number of display items based on array
 function createCard(plant) {
@@ -88,6 +89,7 @@ function createCard(plant) {
   cardHeaderCntr.appendChild(closeBox);
   cardHeaderCntr.appendChild(cardHeaderImg);
 
+  // Close modal button functionality
   closeBox.addEventListener("click", () => {
     if (plantCardCntr.classList.contains("unhide")) {
       plantCardCntr.classList.remove("unhide");
@@ -136,7 +138,6 @@ function createCard(plant) {
     cardDetailsCntr.appendChild(cardDetailRow);
   });
 
-
   // Add the buttons
   const wikiLinkBtn = document.createElement("button");
   wikiLinkBtn.innerHTML = `<a href=${plant.wikiUrl}><i class="fa-solid fa-square-arrow-up-right"></i>Wiki Page</a>`;
@@ -155,126 +156,83 @@ function createCard(plant) {
   cardCntr.appendChild(cardDetailsCntr);
   cardCntr.appendChild(cardBtnCntr);
   plantCardCntr.appendChild(cardCntr);
-=======
-  
- // Search Growstuff for whole plant species, ie all potoatoes
-async function searchSpecies () {
-  const speciesSearchInput = document.getElementById("speciesSearchInput")
-  query = speciesSearchInput.value || "potato"
-  const endpoint = "https://www.growstuff.org/crops/search.json?term=${query}"
+}
+
+// Search Growstuff for whole plant species, ie all potoatoes
+async function searchSpecies() {
+  const speciesSearchInput = document.getElementById("speciesSearchInput");
+  query = speciesSearchInput.value || "potato";
+  const endpoint = "https://www.growstuff.org/crops/search.json?term=${query}";
   const plantArray = [];
 
   try {
-    const response = await fetch(endpoint)
-    const data = await response.json()
+    const response = await fetch(endpoint);
+    const data = await response.json();
     console.log(data);
     data.forEach((plant) => {
-      const id = plant.id //This can be parsed to the searchPlant function to get individual plant from species
-      const name = plant.name
-      const description = plant.description
-      const thumbnail_url = plant.thumbnail_url
-      const scientific_name = plant.scientific_name
-      console.log(plant)
-    })
-  }catch (error) {
+      const id = plant.id; //This can be parsed to the searchPlant function to get individual plant from species
+      const name = plant.name;
+      const description = plant.description;
+      const thumbnail_url = plant.thumbnail_url;
+      const scientific_name = plant.scientific_name;
+      console.log(plant);
+    });
+  } catch (error) {
     console.error("Error fetching plants:", error);
+  }
 }
 
 // Search Growstuff for individual plant, ie sweet potato
 // let currentPlantIndex = 0;
-async function searchPlant (queryParam) {
-let response = await fetch (`http://growstuff.org/crops/${queryParam}.json`)
-let data = await response.json();
-plant = data.results;
-createCards(plant)
-   // createPlant(plants[currentPlantIndex])
- }
-
-function createPlants(plant) {
+async function searchPlant(queryParam) {
+  let response = await fetch(`http://growstuff.org/crops/${queryParam}.json`);
+  let data = await response.json();
+  plant = data.results;
+  createCard(plant);
+  // createPlant(plants[currentPlantIndex])
 }
-function createPlant(plant) {
-  plantContainer.innerHTML=""
-    let API_ID = plant.id;
-    let name = plant.name;
-    let en_wikipedia_url = plant.en_wikipedia_url;
-    let height = plant.openfarm_data.attributes.height;
-    let spread = plant.openfarm_data.attributes.spread;
-    let description = plant.openfarm_data.attributes.description;
-    let row_spacing = plant.openfarm_data.attributes.row_spacing;
-    let sowing_method = plant.openfarm_data.attributes.sowing_method;
-    let main_image_path = plant.openfarm_data.attributes.main_image_path;
-    let sun_requirements = plant.openfarm_data.attributes.sun_requirements;
-    let scientific_names = plant.scientific_names;
-    let patches = "";
-
-}
-
-createCard(selectedPlant);
-
 
 function searchResultsDisplay(plants) {
   console.log("Displaying results");
   const searchResultsCntr = document.getElementById("search-results-container");
-=======
 
+  // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
+  async function getPlants() {
+    // Main results structure
+    plants.forEach((plant) => {
+      //Create Card
+      const resultCard = document.createElement("div");
+      resultCard.classList.add("result-card");
 
-// Get plants from database need to match PLANTCONTAINER with the element ID from index.html
-async function getPlants() {
+      const plantImg = document.createElement("img");
+      plantImg.src = plant.thumbnail_url;
+      plantImg.alt = plant.description;
 
+      const plantInfo = document.createElement("div");
+      plantInfo.classList.add("plant-info");
 
-  // Main results structure
-  plants.forEach((plant) => {
-    //Create Card
-    const resultCard = document.createElement("div");
-    resultCard.classList.add("result-card");
-
-    const plantImg = document.createElement("img");
-    plantImg.src = plant.thumbnail_url;
-    plantImg.alt = plant.description;
-
-
-    const plantInfo = document.createElement("div");
-    plantInfo.classList.add("plant-info");
-=======
-    // Append the container to the main messageContainer
-    messageContainer.appendChild(plantItem);
-    // Event listener for delete, needs to match index.html
-    deleteButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      handleDelete(plant.id);
+      // Append the container to the main messageContainer
+      messageContainer.appendChild(plantItem);
+      // Event listener for delete, needs to match index.html
+      deleteButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        handleDelete(plant.id);
+      });
     });
-  };
+  }
 }
 
-    const resultTitle = document.createElement("h2");
-    resultTitle.innerText = plant.name;
-    const scienceName = document.createElement("p");
-    scienceName.innerText = plant.scientific_names;
-
-    plantInfo.append(resultTitle, scienceName);
-
-    resultCard.append(plantImg, plantInfo);
-    searchResultsCntr.appendChild(resultCard);
-  });
+// Search Growstuff, requires paramater search(queryParam)
+async function search(queryParam) {
+  let response = await fetch(`http://growstuff.org/crops/${queryParam}.json`);
+  let data = await response.json();
+  plants = data.results;
+  searchResultsDisplay(plants);
+  // createPlant(plants[currentPlantIndex])
 }
-
-searchResultsDisplay(plants);
-
-// // Search Growstuff, requires paramater search(queryParam)
-// let currentPlantIndex = 0;
-// async function search (queryParam) {
-//   let response = await fetch (
-//     `http://growstuff.org/crops/${queryParam}.json`
-//   )
-//   let data = await response.json();
-//   plants = data.results;
-//   createCards(plants)
-//   // createPlant(plants[currentPlantIndex])
-// }
 
 // // Get plants from database need to match PLANTCONTAINER with the element ID from index.html
 // async function getPlants() {
-
 //   // Clear the plantContainer of previous results
 //   plantCardsCntr.innerHTML = "";
 //   const response = await fetch(`${baseURL}/plants`);
@@ -291,12 +249,12 @@ searchResultsDisplay(plants);
 //     });
 //   });
 
-// async function handleDelete(id) {
-//   const result = await fetch(`${baseURL}/plants/${id}`, {
-//     method: 'DELETE'
-//   })
-//   console.log(result);
-//   if (result.ok) {
-//     getPlants();
-//   }
-// }
+async function handleDelete(id) {
+  const result = await fetch(`${baseURL}/plants/${id}`, {
+    method: "DELETE",
+  });
+  console.log(result);
+  if (result.ok) {
+    getPlants();
+  }
+}
