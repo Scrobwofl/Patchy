@@ -1,5 +1,6 @@
 console.log("Connected...");
 const baseURL = "http://localhost:5432";
+const plantCardCntr = document.getElementById("plant-card-container");
 
 let plants = [
   {
@@ -57,8 +58,7 @@ let currentPlantIndex = 0;
 function createCard(plant) {
   console.log("Making Card");
 
-  const plantCardCntr = document.getElementById("plant-card-container");
-
+  plantCardCntr.innerHTML = "";
   // Main card structure
   const cardCntr = document.createElement("div");
   cardCntr.classList.add("plant-card");
@@ -89,17 +89,20 @@ function createCard(plant) {
   cardHeaderCntr.appendChild(cardHeaderImg);
 
   // Close modal button functionality
-  closeBox.addEventListener("click", () => {
-    if (plantCardCntr.classList.contains("unhide")) {
-      plantCardCntr.classList.remove("unhide");
-      plantCardCntr.classList.add("hide");
-      console.log("hide");
-    } else if (plantCardCntr.classList.contains("hide")) {
+  closeBox.addEventListener("click", plantCardVisibility);
+
+  // Generic function to show and hide plant details overlay card
+  function plantCardVisibility() {
+    if (plantCardCntr.classList.contains("hide")) {
       plantCardCntr.classList.remove("hide");
       plantCardCntr.classList.add("unhide");
       console.log("unhide");
+    } else if (plantCardCntr.classList.contains("unhide")) {
+      plantCardCntr.classList.remove("unhide");
+      plantCardCntr.classList.add("hide");
+      console.log("hide");
     }
-  });
+  }
 
   // Adding description box
   const cardDescText = document.createElement("p");
@@ -155,11 +158,13 @@ function createCard(plant) {
   cardCntr.appendChild(cardDetailsCntr);
   cardCntr.appendChild(cardBtnCntr);
   plantCardCntr.appendChild(cardCntr);
+  plantCardVisibility();
 }
 
 function searchResultsDisplay(plants) {
   console.log("Displaying results");
   const searchResultsCntr = document.getElementById("search-results-container");
+  searchResultsCntr.innerHTML = "";
 
   // Main results structure
   plants.forEach((plant) => {
@@ -183,6 +188,11 @@ function searchResultsDisplay(plants) {
 
     resultCard.append(plantImg, plantInfo);
     searchResultsCntr.appendChild(resultCard);
+
+    resultCard.addEventListener("click", () => {
+      console.log(`Clicked ${plant.name}`);
+      createCard(plant);
+    });
   });
 }
 // searchResultsDisplay(plants);
