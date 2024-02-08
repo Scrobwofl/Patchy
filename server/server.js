@@ -92,39 +92,37 @@ app.delete("/plants/:id", (req, res) => {
 app.post("/plants", function (req, res) {
   console.log(req.body);
   try {
-    req.forEach((item, i) => {
-      const API_ID = req[i].body.API_ID;
-      const name = req[i].body.name;
-      const en_wikipedia_url = req[i].body.en_wikipedia_url;
-      const height = req[i].body.height;
-      const spread = req[i].body.spread;
-      const description = req[i].body.description;
-      const row_spacing = req[i].body.row_spacing;
-      const sowing_method = req[i].body.sowing_method;
-      const main_image_path = req[i].body.main_image_path;
-      const sun_requirements = req[i].body.sun_requirements;
-      const scientific_names = req[i].body.scientific_names;
-      const svg_icon = req[i].body.svg_icon;
-      const newPlant = db
-        .prepare(
-          `INSERT INTO plants (API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, svg_icon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
-        )
-        .run(
-          API_ID,
-          name,
-          en_wikipedia_url,
-          height,
-          spread,
-          description,
-          row_spacing,
-          sowing_method,
-          main_image_path,
-          sun_requirements,
-          scientific_names,
-          svg_icon
-        );
-      res.json({ success: "success" });
-    });
+    const API_ID = req.body.API_ID;
+    const name = req.body.name;
+    const en_wikipedia_url = req.body.en_wikipedia_url;
+    const height = req.body.height;
+    const spread = req.body.spread;
+    const description = req.body.description;
+    const row_spacing = req.body.row_spacing;
+    const sowing_method = req.body.sowing_method;
+    const main_image_path = req.body.main_image_path;
+    const sun_requirements = req.body.sun_requirements;
+    const scientific_names = req.body.scientific_names;
+    const svg_icon = req.body.svg_icon;
+    const newPlant = db
+      .prepare(
+        `INSERT INTO plants (API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, svg_icon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
+      )
+      .run(
+        API_ID,
+        name,
+        en_wikipedia_url,
+        height,
+        spread,
+        description,
+        row_spacing,
+        sowing_method,
+        main_image_path,
+        sun_requirements,
+        scientific_names,
+        svg_icon
+      );
+    res.json({ success: "success" });
   } catch (err) {
     res.status(500).json({ error: `${err}` });
   }

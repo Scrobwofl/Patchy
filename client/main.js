@@ -117,9 +117,8 @@ function createCard(data) {
       svg_icon: data.openfarm_data.attributes.svg_icon,
     };
 
-    myPatch.push(patchItem);
-    console.log(myPatch);
-    updateMyPatch(myPatch);
+    updateMyPatchUI(patchItem);
+    updatePatchInDatabase(patchItem);
   });
 
   cardBtnCntr.appendChild(wikiLinkBtn);
@@ -173,34 +172,34 @@ function upperCaseThatTitlePlease(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-function updateMyPatch(patchArray) {
+function updateMyPatchUI(patchItem) {
   const patchItemsCntr = document.getElementById("patch-container");
 
-  // Clear existing items
-  patchItemsCntr.innerHTML = "";
+  const itemCntr = document.createElement("div");
+  itemCntr.classList.add("patch-item");
 
-  patchArray.forEach((patchItem) => {
-    // Create container for each item
-    const itemCntr = document.createElement("div");
-    itemCntr.classList.add("patch-item");
+  const imgElement = document.createElement("img");
+  imgElement.src = `${patchItem.main_image_path}`;
+  itemCntr.appendChild(imgElement);
 
-    const imgElement = document.createElement("img");
-    imgElement.src = `${patchItem.main_image_path}`;
-    itemCntr.appendChild(imgElement);
+  // Create and append name
+  const nameElement = document.createElement("p");
+  nameElement.textContent = patchItem.name;
+  itemCntr.appendChild(nameElement);
 
-    // Create and append name
-    const nameElement = document.createElement("p");
-    nameElement.textContent = patchItem.name;
-    itemCntr.appendChild(nameElement);
-
-    // Append to main container
-    patchItemsCntr.appendChild(itemCntr);
-    updatePatchInDatabase(myPatch);
+  // Add event listener to display details on click
+  itemCntr.addEventListener("click", () => {
+    createCard(patchItem);
   });
+
+  // Append to main container
+  patchItemsCntr.appendChild(itemCntr);
 }
 
 async function updatePatchInDatabase(data) {
   try {
+    console.log("Updating patch...");
+    console.log(data);
     const response = await fetch("http://localhost:6060/plants", {
       method: "POST",
       headers: {
@@ -214,21 +213,21 @@ async function updatePatchInDatabase(data) {
     console.error("Error updating patch:", error);
   }
 }
-async function getPatch() {
-  try {
-    const response = await fetch("http://localhost:6060/plants", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const responseData = await response.json();
-    console.log("Data updated successfully:", responseData);
-  } catch (error) {
-    console.error("Error updating patch:", error);
-  }
-}
+// async function getPatch() {
+//   try {
+//     const response = await fetch("http://localhost:6060/plants", {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(data),
+//     });
+//     const responseData = await response.json();
+//     console.log("Data updated successfully:", responseData);
+//   } catch (error) {
+//     console.error("Error updating patch:", error);
+//   }
+// }
 
 // async function getPatchFromDatabase() {
 //   console.log("Requesting Database...");
@@ -264,6 +263,17 @@ async function getSpecificPlant(query) {
   // createPlant(plants[currentPlantIndex])
 }
 
+async function onPageLoadPatchFetch() {
+  let response = await fetch(`http://localhost:6060/plants`);
+  let data = await response.json();
+
+  data.forEach((item) => {
+    updateMyPatchUI(item);
+  });
+  // createPlant(plants[currentPlantIndex])
+}
+
+onPageLoadPatchFetch();
 // // Search Growstuff, requires paramater search(queryParam)
 // async function search(queryParam) {
 //   let response = await fetch(`http://growstuff.org/crops/${queryParam}.json`);
