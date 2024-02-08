@@ -92,7 +92,6 @@ app.delete("/plants/:id", (req, res) => {
 // })
 
 app.post("/plants", function (req, res) {
-  console.log(req.body);
   try {
     const API_ID = req.body.API_ID;
     const name = req.body.name;
@@ -147,7 +146,6 @@ app.post("/plants", function (req, res) {
 // )
 
 app.put(`/plants/:id`, (req, res) => {
-  console.log(req.params, req.body);
   try {
     const id = req.params.id;
     const API_ID = req.body.API_ID;
