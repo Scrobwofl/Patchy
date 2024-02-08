@@ -27,7 +27,7 @@ header {
 }
 
 #brand-header-icon {
-  background-image: url("./public/images/logos/patchy-icon-logo-letter_small.png");
+  background-image: url("./images/logos/patchy-icon-logo-letter_small.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: auto;
@@ -35,6 +35,44 @@ header {
   margin: 1rem;
   height: auto;
   width: 200px;
+}
+
+#my-patch-container {
+  height: auto;
+  width: 100vw;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: darkslategrey;
+}
+
+#my-patch-container h2 {
+  font-size: 1.2rem;
+  color: white;
+  margin: 1rem;
+}
+
+#patch-container {
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow: scroll;
+}
+
+.patch-item {
+  height: 100%;
+  width: auto;
+}
+
+.patch-item > img {
+  height: 3rem;
+  width: auto;
+}
+
+.patch-item p {
+  color: white;
+  padding: 0.5rem;
 }
 
 #placeholder-text {

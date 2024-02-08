@@ -4,7 +4,7 @@ const db = new Database("database.db");
 db.exec(`
   CREATE TABLE IF NOT EXISTS plants (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    API_ID INTEGER NOT NULL,
+    API_ID INTEGER,
     name TEXT NOT NULL,
     en_wikipedia_url TEXT,
     height INTEGER,
@@ -15,11 +15,11 @@ db.exec(`
     main_image_path TEXT,
     sun_requirements TEXT,
     scientific_names TEXT,
-    patches TEXT
+    svg_icon TEXT
   )
 `);
 db.exec(`
-  INSERT INTO plants (API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, patches)
+  INSERT INTO plants (API_ID, name, en_wikipedia_url, height, spread, description, row_spacing, sowing_method, main_image_path, sun_requirements, scientific_names, svg_icon)
   VALUES
     (
       37,
@@ -106,5 +106,4 @@ db.exec(`
       'Full sun',
       'Ficus hispida',
       'Two Three'
-    )`
-);
+    )`);

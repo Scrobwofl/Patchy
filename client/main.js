@@ -10,12 +10,9 @@ let myPatch = [];
 
 // Create single card with full plant information
 function createCard(data) {
-  console.log("Making Card");
-  console.log(data);
   const plantAttribute = data.openfarm_data.attributes;
 
   plantCardCntr.innerHTML = "";
-  console.log("Cleared HTML");
   // Main card structure
   const cardCntr = document.createElement("div");
   cardCntr.classList.add("plant-card");
@@ -27,17 +24,14 @@ function createCard(data) {
   cardDetailsCntr.classList.add("card-details-container");
   const cardBtnCntr = document.createElement("div");
   cardBtnCntr.classList.add("card-button-container");
-  console.log("Created Base Attributes");
   // Adding Header box
   const cardHeaderTitle = document.createElement("h1");
-  // console.log(plantAttribute.name);
   cardHeaderTitle.textContent = upperCaseThatTitlePlease(data.name);
   const cardHeaderSubheading = document.createElement("p");
-  cardHeaderSubheading.textContent = plantAttribute.binominal_name;
+  cardHeaderSubheading.textContent = data.scientific_names.name;
   const cardHeaderImg = document.createElement("img");
   cardHeaderImg.src = plantAttribute.main_image_path;
   cardHeaderImg.alt = plantAttribute.description;
-  console.log("Appending Close Button");
   const closeBox = document.createElement("div");
   closeBox.innerHTML = `<i class="fa-solid fa-circle-xmark fa-2xl"></i>`;
   closeBox.classList.add("close-box");
@@ -55,11 +49,9 @@ function createCard(data) {
     if (plantCardCntr.classList.contains("hide")) {
       plantCardCntr.classList.remove("hide");
       plantCardCntr.classList.add("unhide");
-      console.log("unhide");
     } else if (plantCardCntr.classList.contains("unhide")) {
       plantCardCntr.classList.remove("unhide");
       plantCardCntr.classList.add("hide");
-      console.log("hide");
     }
   }
 
@@ -78,16 +70,15 @@ function createCard(data) {
   ];
   // An array of the values for the details box.
   const cardDetailsArray = [
-    plantAttribute.height,
-    plantAttribute.spread,
-    plantAttribute.rowSpacing,
-    plantAttribute.sowingMethod,
-    plantAttribute.sunRequirements,
+    data.openfarm_data.attributes.height,
+    data.openfarm_data.attributes.spread,
+    data.openfarm_data.attributes.row_spacing,
+    data.openfarm_data.attributes.sowing_method,
+    data.openfarm_data.attributes.sun_requirements,
   ];
 
   // A looping the details creation so we dont repeat ourselves too much
   cardDetailsArray.forEach((detail, index) => {
-    console.log(`Looping ${index}`);
     const cardDetailRow = document.createElement("div");
     cardDetailRow.classList.add("card-details-row");
     const cardDetailText = document.createElement("p");
@@ -111,27 +102,25 @@ function createCard(data) {
 
   // Add to myPatch event listener
   addToPatchBtn.addEventListener("click", () => {
-    console.log("Commenced adding to patch");
-
-    let newPatchItem = {
-      id: data.id,
+    let patchItem = {
+      API_ID: data.id,
       name: data.openfarm_data.attributes.name,
-      wikiUrl: data.openfarm_data.attributes.en_wikipedia_url,
+      en_wikipedia_url: data.openfarm_data.attributes.en_wikipedia_url,
       height: data.openfarm_data.attributes.height,
       spread: data.openfarm_data.attributes.spread,
-      desc: data.openfarm_data.attributes.description,
-      rowSpacing: data.openfarm_data.attributes.row_spacing,
-      sowingMethod: data.openfarm_data.attributes.sowing_method,
-      imagePath: data.openfarm_data.attributes.main_image_path,
-      sunRequirements: data.openfarm_data.attributes.sun_requirements,
-      scientificName: data.openfarm_data.attributes.scientific_name,
+      description: data.openfarm_data.attributes.description,
+      row_spacing: data.openfarm_data.attributes.row_spacing,
+      sowing_method: data.openfarm_data.attributes.sowing_method,
+      main_image_path: data.openfarm_data.attributes.main_image_path,
+      sun_requirements: data.openfarm_data.attributes.sun_requirements,
+      scientific_names: data.scientific_names.name,
+      svg_icon: data.openfarm_data.attributes.svg_icon,
     };
 
-    myPatch.push(newPatchItem);
+    myPatch.push(patchItem);
     console.log(myPatch);
+    updateMyPatch(myPatch);
   });
-
-  console.log("buttons made!");
 
   cardBtnCntr.appendChild(wikiLinkBtn);
   cardBtnCntr.appendChild(addToPatchBtn);
@@ -148,7 +137,6 @@ function createCard(data) {
 }
 
 function searchResultsDisplay(plants) {
-  console.log("Displaying results");
   const searchResultsCntr = document.getElementById("search-results-container");
   searchResultsCntr.innerHTML = "";
 
@@ -176,7 +164,6 @@ function searchResultsDisplay(plants) {
     searchResultsCntr.appendChild(resultCard);
 
     resultCard.addEventListener("click", () => {
-      console.log(`Clicked ${plant.name}`);
       getSpecificPlant(plant.id);
     });
   });
@@ -186,26 +173,82 @@ function upperCaseThatTitlePlease(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
+function updateMyPatch(patchArray) {
+  const patchItemsCntr = document.getElementById("patch-container");
+
+  // Clear existing items
+  patchItemsCntr.innerHTML = "";
+
+  patchArray.forEach((patchItem) => {
+    // Create container for each item
+    const itemCntr = document.createElement("div");
+    itemCntr.classList.add("patch-item");
+
+    const imgElement = document.createElement("img");
+    imgElement.src = `${patchItem.main_image_path}`;
+    itemCntr.appendChild(imgElement);
+
+    // Create and append name
+    const nameElement = document.createElement("p");
+    nameElement.textContent = patchItem.name;
+    itemCntr.appendChild(nameElement);
+
+    // Append to main container
+    patchItemsCntr.appendChild(itemCntr);
+    updatePatchInDatabase(myPatch);
+  });
+}
+
+async function updatePatchInDatabase(data) {
+  try {
+    const response = await fetch("http://localhost:6060/plants", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    console.log("Data updated successfully:", responseData);
+  } catch (error) {
+    console.error("Error updating patch:", error);
+  }
+}
+async function getPatch() {
+  try {
+    const response = await fetch("http://localhost:6060/plants", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    console.log("Data updated successfully:", responseData);
+  } catch (error) {
+    console.error("Error updating patch:", error);
+  }
+}
+
+// async function getPatchFromDatabase() {
+//   console.log("Requesting Database...");
+// }
+
 const form = document.getElementById("search-container");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-
   const query = document.getElementById("search").value.trim();
-  console.log("Form Submitted...");
-  console.log(query);
   searchSpecies(query);
 });
 
 // Search Growstuff for whole plant species, ie all potoatoes
 async function searchSpecies(query) {
-  console.log("Searching...");
   const endpoint = `http://localhost:6060/search-species?term=${query}`;
 
   try {
     const response = await fetch(endpoint);
     const data = await response.json();
-    console.log(data);
     searchResultsDisplay(data);
   } catch (error) {
     console.error("Error fetching plants:", error);
@@ -215,22 +258,20 @@ async function searchSpecies(query) {
 // Search Growstuff for individual plant, ie sweet potato
 // let currentPlantIndex = 0;
 async function getSpecificPlant(query) {
-  console.log("Requested Data..");
   let response = await fetch(`http://localhost:6060/crops/${query}`);
   let data = await response.json();
-  console.log("Data fetched successfully:", data);
   createCard(data);
   // createPlant(plants[currentPlantIndex])
 }
 
-// Search Growstuff, requires paramater search(queryParam)
-async function search(queryParam) {
-  let response = await fetch(`http://growstuff.org/crops/${queryParam}.json`);
-  let data = await response.json();
-  plants = data.results;
-  searchResultsDisplay(plants);
-  // createPlant(plants[currentPlantIndex])
-}
+// // Search Growstuff, requires paramater search(queryParam)
+// async function search(queryParam) {
+//   let response = await fetch(`http://growstuff.org/crops/${queryParam}.json`);
+//   let data = await response.json();
+//   plants = data.results;
+//   searchResultsDisplay(plants);
+//   // createPlant(plants[currentPlantIndex])
+// }
 
 // Useful scripts for later:
 
@@ -238,7 +279,6 @@ async function search(queryParam) {
 //   const result = await fetch(`${baseURL}/plants/${id}`, {
 //     method: "DELETE",
 //   });
-//   console.log(result);
 //   if (result.ok) {
 //     getPlants();
 //   }
