@@ -37,7 +37,7 @@ header {
   position: absolute;
   top: 1rem;
   left: 0;
-  background-image: url("./images/logos/patchy-icon-logo-letter_small.png");
+  background-image: url("./public/images/logos/patchy-icon-logo-letter_small.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
