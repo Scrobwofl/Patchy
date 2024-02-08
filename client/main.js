@@ -1,5 +1,5 @@
 console.log("Connected...");
-const baseURL = "https://patchywebservice.onrender.com:10000";
+const baseURL = "https://patchywebservice.onrender.com";
 const plantCardCntr = document.getElementById("plant-card-container");
 
 let returnedPlantData;
