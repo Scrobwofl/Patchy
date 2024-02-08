@@ -3,6 +3,7 @@ import cors from "cors";
 import Database from "better-sqlite3";
 import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 const db = new Database("database.db");
 
