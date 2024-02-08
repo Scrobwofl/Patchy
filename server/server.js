@@ -5,7 +5,7 @@ import Database from "better-sqlite3";
 const app = express();
 const db = new Database("database.db");
 
-const PORT = 6060;
+const PORT = 10000;
 
 app.use(cors());
 app.use(express.json());
