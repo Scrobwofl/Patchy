@@ -343,6 +343,9 @@ header {
 }
 
 @media only screen and (min-width: 1024px) {
+  body {
+    background-color: lightslategray;
+  }
   #app {
     grid-template-rows: 20vh 60vh 20vh;
     grid-template-columns: 10vw 10vw 60vw 10vw 10vw;
