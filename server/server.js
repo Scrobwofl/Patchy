@@ -1,11 +1,12 @@
 import express from "express";
 import cors from "cors";
 import Database from "better-sqlite3";
+import dotenv from "dotenv";
 
 const app = express();
 const db = new Database("database.db");
 
-const PORT = 10000;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
