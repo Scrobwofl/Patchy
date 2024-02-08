@@ -1,5 +1,5 @@
 console.log("Connected...");
-const baseURL = "http://localhost:5432";
+const baseURL = "https://patchywebservice.onrender.com";
 const plantCardCntr = document.getElementById("plant-card-container");
 
 let returnedPlantData;
@@ -200,7 +200,7 @@ async function updatePatchInDatabase(data) {
   try {
     console.log("Updating patch...");
     console.log(data);
-    const response = await fetch("http://localhost:6060/plants", {
+    const response = await fetch(`${baseURL}/plants`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -243,7 +243,7 @@ form.addEventListener("submit", (e) => {
 
 // Search Growstuff for whole plant species, ie all potoatoes
 async function searchSpecies(query) {
-  const endpoint = `http://localhost:6060/search-species?term=${query}`;
+  const endpoint = `${baseURL}/search-species?term=${query}`;
 
   try {
     const response = await fetch(endpoint);
@@ -257,14 +257,14 @@ async function searchSpecies(query) {
 // Search Growstuff for individual plant, ie sweet potato
 // let currentPlantIndex = 0;
 async function getSpecificPlant(query) {
-  let response = await fetch(`http://localhost:6060/crops/${query}`);
+  let response = await fetch(`${baseURL}/crops/${query}`);
   let data = await response.json();
   createCard(data);
   // createPlant(plants[currentPlantIndex])
 }
 
 async function onPageLoadPatchFetch() {
-  let response = await fetch(`http://localhost:6060/plants`);
+  let response = await fetch(`${baseURL}/plants`);
   let data = await response.json();
 
   data.forEach((item) => {
